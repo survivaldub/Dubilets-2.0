@@ -40,7 +40,9 @@ public class DubiletsCommand implements CommandExecutor, TabCompleter {
         if (sender.hasPermission("survivaldub.dubilets.remove"))
             sender.sendMessage(ChatUtils.translateColor(" &e/dubilets remove <nombre> &8- &7Elimina un dubilet"));
         if (sender.hasPermission("survivaldub.dubilets.list"))
-            sender.sendMessage(ChatUtils.translateColor(" &e/dubilets list &8- &7Lista todos los dubilets"));
+            sender.sendMessage(ChatUtils.translateColor(" &e/dubilets list &8- &7Muestra la lista de dubilets"));
+        if (sender.hasPermission("survivaldub.dubilets.reload"))
+            sender.sendMessage(ChatUtils.translateColor(" &e/dubilets reload &8- &7Recarga la configuración y el lenguaje"));
         if (sender.hasPermission("survivaldub.dubilets.give"))
             sender.sendMessage(ChatUtils.translateColor(" &e/dubilets give <cant> [jugador] &8- &7Otorga dubets"));
         if (sender.hasPermission("survivaldub.dubilets.set"))
@@ -89,6 +91,13 @@ public class DubiletsCommand implements CommandExecutor, TabCompleter {
                 if (!(sender instanceof Player) || !sender.hasPermission("survivaldub.dubilets")) break;
                 Player player = (Player) sender;
                 Dubilets.getMenuManager().setPlayerMenu(player, new DubiletInfoMenu());
+                break;
+            }
+            case "reload": {
+                if (!sender.hasPermission("survivaldub.dubilets.reload")) break;
+                this.plugin.getConfigHandler().loadConfig();
+                this.plugin.getLanguageHandler().loadFile();
+                sender.sendMessage(ChatUtils.translateColor("&a&l¡Éxito! &8| &7La configuración y el lenguaje han sido recargados."));
                 break;
             }
             case "create": {
@@ -224,7 +233,7 @@ public class DubiletsCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("create", "list", "remove", "give", "set", "bal", "info").stream().filter(s -> s.startsWith(args[0].toLowerCase())).collect(Collectors.toList());
+            return Arrays.asList("create", "list", "remove", "give", "set", "bal", "info", "reload").stream().filter(s -> s.startsWith(args[0].toLowerCase())).collect(Collectors.toList());
         }
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("remove")) {

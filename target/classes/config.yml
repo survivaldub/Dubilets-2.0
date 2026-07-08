@@ -1,0 +1,18 @@
+# SurvivaldubCore
+
+#Configuración de la base de datos / Database configuration
+database:
+  host: "localhost"  # Dirección del servidor MySQL
+  port: 3306         # Puerto del servidor MySQL
+  name: "name"
+  user: "username"
+  password: "password"  # Contraseña del servidor MySQL
+  ssl: false
+
+custom-name: "example"
+dubilets:
+  enable: false
+  win-percent-kill: 0
+  locations: []
+  prizes: []
+version: '2.0' #ES: POR FAVOR NO MODIFICAR ESTO. O LA CONFIG DEJARÁ DE FUNCIONAR / EN: PLEASE DO NOT MODIFY THIS. OR THE CONFIG FILE WILL NOT WORK

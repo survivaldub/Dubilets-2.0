@@ -7,6 +7,7 @@ import java.util.Collection;
 
 public class ChatUtils {
 
+    @SuppressWarnings("deprecation")
     public static String translateColor(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }

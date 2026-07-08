@@ -1,0 +1,27 @@
+name: Dubilets
+version: '2.0'
+main: com.survivaldub.dubilets.Dubilets
+api-version: '1.21'
+authors: [ H3rzius ] #Actualizado por Danettw
+description: Maquina de dubilets
+
+softdepend:
+  - FancyHolograms
+  - PlaceholderAPI
+  - Vault
+
+commands:
+  dubilets:
+    description: dubilet command
+    permission: dubilets
+
+permissions:
+  dubilets:
+    description: Permission for dubilets
+    children:
+      dubilets.admin:
+        description: Admin permission for dubilets (management)
+        default: op
+
+libraries:
+  - com.mysql:mysql-connector-j:9.2.0

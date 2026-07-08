@@ -147,7 +147,10 @@ public class DubiletHandler {
 
     private void prepareAnimation(final Player player, final double totalProbability, final Prize prize) {
         if (this.hologram != null) {
-            this.hologram.hideHologram(player);
+            if (this.hologram.getData() instanceof TextHologramData textData) {
+                textData.setText(new ArrayList<>());
+                this.hologram.forceUpdate();
+            }
         }
         final ArmorStand armorstand = this.createArmorstand(player);
         double percent = prize.getPercent();
@@ -167,7 +170,6 @@ public class DubiletHandler {
                         try {
                             armorstand.remove();
                             if (self.hologram != null) {
-                                self.hologram.showHologram(player);
                                 ArrayList<String> lines = new ArrayList<>();
                                 lines.add(ChatUtils.translateColor(self.plugin.getLanguageHandler().getString("dubilets.player_won").replace("%player%", player.getName())));
                                 lines.add(ChatUtils.translateColor(prize.getName()));
