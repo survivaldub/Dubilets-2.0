@@ -1,0 +1,25 @@
+no-console-allowed: 'Tienes que ser jugador para usar este comando'
+no-player-found: 'No se ha encontrado con ningun jugador'
+no-player-given: '&cDebes introducir el nick del usuario o en caso de una UUID poner: &e-uuid <UUID>'
+commands:
+    unknown: 'Este comando no existe'
+permission:
+  no-permission: '&cNo tienes suficientes permisos para ejecutar este comando'
+menus:
+  dubilets:
+    info: 'Dubilets'
+dubilets:
+  your_balance: '&fTienes un total de &a&l%dubets% &aDubets'
+  player_balance: '&b&l%player% &ftiene un total de &a&l%dubets% &aDubets'
+  added_dubet: '&a +&l1 &aDubet!'
+  added_dubets: '&a +&l%dubets% &aDubets!'
+  you_have_won: '&9&l¡Enhorabuena! &fHas encontrado &6%prize%'
+  player_won: '&c&l%player% &eha ganado'
+  no_dubets: '&cNo tienes dubets en tu poder.'
+  wait_use: '&7Tienes que esperar a que finalice el sorteo actual...'
+  hologram:
+    - '&b&lDUBILET'
+    - '&e¡Gasta aquí tus dubets!'
+  no_prizes: '&cNo hay premios configurados en este Dubilet.'
+
+version: '1.0' #ES: POR FAVOR NO MODIFICAR ESTO. O LA CONFIG DEJARÁ DE FUNCIONAR / EN: PLEASE DO NOT MODIFY THIS. OR THE CONFIG FILE WILL NOT WORK
