@@ -44,7 +44,7 @@ public class DubiletsCommand implements CommandExecutor, TabCompleter {
         if (sender.hasPermission("survivaldub.dubilets.reload"))
             sender.sendMessage(ChatUtils.translateColor(" &e/dubilets reload &8- &7Recarga la configuración y el lenguaje"));
         if (sender.hasPermission("survivaldub.dubilets.give"))
-            sender.sendMessage(ChatUtils.translateColor(" &e/dubilets give <cant> [jugador] &8- &7Otorga dubets"));
+            sender.sendMessage(ChatUtils.translateColor(" &e/dubilets give <jugador> <cant> &8- &7Otorga dubets"));
         if (sender.hasPermission("survivaldub.dubilets.set"))
             sender.sendMessage(ChatUtils.translateColor(" &e/dubilets set <cant> [jugador] &8- &7Establece dubets"));
         if (sender.hasPermission("survivaldub.dubilets.balance"))
@@ -95,8 +95,12 @@ public class DubiletsCommand implements CommandExecutor, TabCompleter {
             }
             case "reload": {
                 if (!sender.hasPermission("survivaldub.dubilets.reload")) break;
+                for (com.survivaldub.dubilets.handlers.DubiletHandler handler : DubiletConfig.getDubilets()) {
+                    handler.destroy();
+                }
                 this.plugin.getConfigHandler().loadConfig();
                 this.plugin.getLanguageHandler().loadFile();
+                DubiletConfig.loadDubilets();
                 sender.sendMessage(ChatUtils.translateColor("&a&l¡Éxito! &8| &7La configuración y el lenguaje han sido recargados."));
                 break;
             }
@@ -137,19 +141,15 @@ public class DubiletsCommand implements CommandExecutor, TabCompleter {
             }
             case "give": {
                 if (!sender.hasPermission("survivaldub.dubilets.give")) break;
-                if (args.length < 2) {
-                    sender.sendMessage(ChatUtils.translateColor("&c&lError &8| &7Uso correcto: &e/dubilets give <cantidad> [jugador]"));
+                if (args.length < 3) {
+                    sender.sendMessage(ChatUtils.translateColor("&c&lError &8| &7Uso correcto: &e/dubilets give <jugador> <cantidad>"));
                     return true;
                 }
-                String nick = "";
-                Player player = null;
-                if (args.length > 2) {
-                    nick = args[2];
-                    player = Bukkit.getPlayer(args[2]);
-                }
+                String nick = args[1];
+                Player player = Bukkit.getPlayer(args[1]);
                 int tempDubet;
                 try {
-                    tempDubet = Integer.parseInt(args[1]);
+                    tempDubet = Integer.parseInt(args[2]);
                 } catch (NumberFormatException e) {
                     sender.sendMessage(ChatUtils.translateColor("&c&lError &8| &7La cantidad debe ser un número válido."));
                     return true;

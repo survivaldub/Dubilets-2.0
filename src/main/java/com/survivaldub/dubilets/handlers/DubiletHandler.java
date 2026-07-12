@@ -6,10 +6,6 @@ import com.survivaldub.dubilets.handlers.models.Prize;
 import com.survivaldub.dubilets.utils.BlockUtils;
 import com.survivaldub.dubilets.utils.ChatUtils;
 import com.survivaldub.dubilets.utils.MathUtils;
-import de.oliver.fancyholograms.api.FancyHologramsPlugin;
-import de.oliver.fancyholograms.api.HologramManager;
-import de.oliver.fancyholograms.api.data.TextHologramData;
-import de.oliver.fancyholograms.api.hologram.Hologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -41,7 +37,7 @@ public class DubiletHandler {
     private static final Sound SONG_SOUND = Sound.BLOCK_NOTE_BLOCK_HARP;
     private String name;
     private Location location;
-    private Hologram hologram;
+    private DubiletHologram hologram;
     private boolean used;
 
     public DubiletHandler(Dubilets plugin) {
@@ -53,18 +49,12 @@ public class DubiletHandler {
         this.name = name;
         this.location = loc;
         if (Bukkit.getPluginManager().isPluginEnabled("FancyHolograms") && loc != null) {
-            String holoName = "dubilet_" + name;
-            HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
-
-            // Remove existing hologram if present
-            manager.getHologram(holoName).ifPresent(existing -> manager.removeHologram(existing));
-
-            // Create new hologram
-            TextHologramData data = new TextHologramData(holoName, loc.clone().add(0.5, 2.3, 0.5));
-            data.setBackground(org.bukkit.Color.fromARGB(100, 0, 0, 0));
-            this.hologram = manager.create(data);
-            manager.addHologram(this.hologram);
-            this.setDefaultHologram();
+            try {
+                this.hologram = new FancyHologramsHook(name, loc);
+                this.setDefaultHologram();
+            } catch (Throwable t) {
+                this.plugin.getLogger().warning("No se pudo cargar el holograma para " + name + ": " + t.getMessage());
+            }
         }
     }
 
@@ -105,10 +95,7 @@ public class DubiletHandler {
         for (String line : configLines) {
             lines.add(ChatUtils.translateColor(line.replace("%name%", customName)));
         }
-        if (this.hologram.getData() instanceof TextHologramData textData) {
-            textData.setText(lines);
-            this.hologram.forceUpdate();
-        }
+        this.hologram.setText(lines);
     }
 
     public boolean prepare(Player player) {
@@ -147,10 +134,7 @@ public class DubiletHandler {
 
     private void prepareAnimation(final Player player, final double totalProbability, final Prize prize) {
         if (this.hologram != null) {
-            if (this.hologram.getData() instanceof TextHologramData textData) {
-                textData.setText(new ArrayList<>());
-                this.hologram.forceUpdate();
-            }
+            this.hologram.setText(new ArrayList<>());
         }
         final ArmorStand armorstand = this.createArmorstand(player);
         double percent = prize.getPercent();
@@ -173,10 +157,7 @@ public class DubiletHandler {
                                 ArrayList<String> lines = new ArrayList<>();
                                 lines.add(ChatUtils.translateColor(self.plugin.getLanguageHandler().getString("dubilets.player_won").replace("%player%", player.getName())));
                                 lines.add(ChatUtils.translateColor(prize.getName()));
-                                if (self.hologram.getData() instanceof TextHologramData textData) {
-                                    textData.setText(lines);
-                                    self.hologram.forceUpdate();
-                                }
+                                self.hologram.setText(lines);
                             }
 
                             final org.bukkit.entity.ItemDisplay itemDisplay = (org.bukkit.entity.ItemDisplay) self.location.getWorld().spawnEntity(self.location.clone().add(0.5, 1.3, 0.5), org.bukkit.entity.EntityType.ITEM_DISPLAY);
@@ -207,9 +188,9 @@ public class DubiletHandler {
                             }
                             BlockUtils.detonateFirework((Plugin) self.plugin, 1L, BlockUtils.spawnFirework(self.location.clone().add(0.5, 1.0, 0.5), 0, FireworkEffect.Type.BURST, color));
                             if (prize.getPercent() <= 0.05 * totalProbability) {
-                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 2.5f, 1.0f);
+                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, org.bukkit.SoundCategory.MASTER, 2.5f, 1.0f);
                             } else {
-                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2.5f, 0.3f);
+                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, org.bukkit.SoundCategory.MASTER, 2.5f, 0.3f);
                             }
                         } finally {
                             this.cancel();
@@ -258,44 +239,44 @@ public class DubiletHandler {
         switch (tick) {
             case 0:
             case 12:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.12f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.12f);
                 break;
             case 4:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 0.94f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.88f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 0.94f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.88f);
                 break;
             case 8:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.06f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.06f);
                 break;
             case 16:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.26f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 0.76f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.88f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.26f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 0.76f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.88f);
                 break;
             case 20:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.06f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.12f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.06f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.12f);
                 break;
             case 24:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.12f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.4f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.12f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.4f);
                 break;
             case 28:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.26f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 0.84f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.88f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.26f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 0.84f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.88f);
                 break;
             case 32:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.06f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.52f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.06f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.52f);
                 break;
             case 36:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.4f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.12f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.4f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.12f);
                 break;
             case 40:
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 1.88f);
-                location.getWorld().playSound(location, SONG_SOUND, 3.0f, 0.94f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 1.88f);
+                location.getWorld().playSound(location, SONG_SOUND, org.bukkit.SoundCategory.MASTER, 3.0f, 0.94f);
                 break;
         }
     }
@@ -339,9 +320,8 @@ public class DubiletHandler {
     }
 
     public void destroy() {
-        if (this.hologram != null && Bukkit.getPluginManager().isPluginEnabled("FancyHolograms")) {
-            HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
-            manager.removeHologram(this.hologram);
+        if (this.hologram != null) {
+            this.hologram.delete();
         }
     }
 }
