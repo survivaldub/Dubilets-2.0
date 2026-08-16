@@ -1,5 +1,6 @@
 com\survivaldub\dubilets\menus\lib\MenuManager.class
 com\survivaldub\dubilets\placeholders\DubiletPlaceholders.class
+com\survivaldub\dubilets\handlers\FancyHologramsHook.class
 com\survivaldub\dubilets\handlers\PlayerHandler.class
 com\survivaldub\dubilets\Dubilets.class
 com\survivaldub\dubilets\utils\InventoryUtils.class
@@ -29,6 +30,7 @@ com\survivaldub\dubilets\database\SqlDataHandler.class
 com\survivaldub\dubilets\handlers\DubiletHandler$1$1.class
 com\survivaldub\dubilets\menus\DubiletInfoMenu.class
 com\survivaldub\dubilets\commands\DubiletsCommand.class
+com\survivaldub\dubilets\handlers\DubiletHologram.class
 com\survivaldub\dubilets\commands\DubiletsCommand$1.class
 com\survivaldub\dubilets\utils\enums\EnumBannerPatternShape.class
 com\survivaldub\dubilets\handlers\LanguageHandler.class

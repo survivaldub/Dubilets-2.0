@@ -23,7 +23,7 @@ public class FancyHologramsHook implements DubiletHologram {
         TextHologramData data = new TextHologramData(holoName, loc.clone().add(0.5, 1.6, 0.5));
         data.setBackground(org.bukkit.Color.fromARGB(100, 0, 0, 0));
         data.setFilePath(holoName);
-        data.setVisibilityDistance(32);
+        data.setVisibilityDistance(48);
         this.hologram = FancyHolograms.get().getHologramFactory().apply(data);
         registry.register(this.hologram);
     }
