@@ -33,7 +33,7 @@ public class DubiletPlaceholders extends PlaceholderExpansion {
     @Override
     @NotNull
     public String getIdentifier() {
-        return "dubilets";
+        return "survivaldub";
     }
 
     @Override

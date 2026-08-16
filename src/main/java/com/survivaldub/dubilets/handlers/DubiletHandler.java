@@ -48,12 +48,32 @@ public class DubiletHandler {
         this.plugin = plugin;
         this.name = name;
         this.location = loc;
-        if (Bukkit.getPluginManager().isPluginEnabled("FancyHolograms") && loc != null) {
+        if (loc != null) {
+            if (Bukkit.getPluginManager().isPluginEnabled("FancyHolograms")) {
+                // La 3.x usa com.fancyinnovations y la 2.x de.oliver: se prueban las dos.
+                try {
+                    this.hologram = new FancyHologramsHook(name, loc);
+                } catch (Throwable v3) {
+                    try {
+                        this.hologram = new FancyHologramsV2Hook(name, loc);
+                    } catch (Throwable v2) {
+                        this.plugin.getLogger().warning("FancyHolograms no sirve para " + name + " (v3: " + v3 + " | v2: " + v2 + "), se usa el holograma nativo.");
+                    }
+                }
+            } else {
+                this.plugin.getLogger().info("FancyHolograms no esta activo, se usa el holograma nativo para " + name + ".");
+            }
+            if (this.hologram == null) {
+                try {
+                    this.hologram = new NativeHologram(name, loc);
+                } catch (Throwable t) {
+                    this.plugin.getLogger().warning("No se pudo crear el holograma para " + name + ": " + t);
+                }
+            }
             try {
-                this.hologram = new FancyHologramsHook(name, loc);
                 this.setDefaultHologram();
             } catch (Throwable t) {
-                this.plugin.getLogger().warning("No se pudo cargar el holograma para " + name + ": " + t.getMessage());
+                this.plugin.getLogger().warning("No se pudo poner el texto del holograma " + name + ": " + t);
             }
         }
     }
@@ -88,8 +108,12 @@ public class DubiletHandler {
         }
         ArrayList<String> lines = new ArrayList<>();
         List<String> configLines = this.plugin.getLanguageHandler().getStringList("dubilets.hologram");
+        if (configLines == null || configLines.isEmpty()) {
+            this.plugin.getLogger().warning("Falta 'dubilets.hologram' en lang.yml, usando el texto por defecto. Borra lang.yml para regenerarlo.");
+            configLines = List.of("&b&l%name%", "&e¡Gasta aqui tus dubets!");
+        }
         String customName = this.plugin.getConfigHandler().getString("custom-name");
-        if (customName == null || customName.isEmpty()) {
+        if (customName == null || customName.isEmpty() || customName.startsWith("errorCouldNotLocateInConfigYml")) {
             customName = "&bDUBILET";
         }
         for (String line : configLines) {
@@ -161,7 +185,9 @@ public class DubiletHandler {
                             }
 
                             final org.bukkit.entity.ItemDisplay itemDisplay = (org.bukkit.entity.ItemDisplay) self.location.getWorld().spawnEntity(self.location.clone().add(0.5, 1.3, 0.5), org.bukkit.entity.EntityType.ITEM_DISPLAY);
-                            itemDisplay.setItemStack(new ItemStack(prize.getIcon().getType()));
+                            // Se pasa el icono entero, no solo el material, para conservar
+                            // CustomModelData, encantamientos y textura de cabeza.
+                            itemDisplay.setItemStack(prize.getIcon());
                             itemDisplay.setBillboard(org.bukkit.entity.Display.Billboard.CENTER);
                             org.bukkit.util.Transformation transformation = itemDisplay.getTransformation();
                             transformation.getScale().set(0.6f, 0.6f, 0.6f);

@@ -1,7 +1,7 @@
 name: Dubilets
 version: '2.0'
 main: com.survivaldub.dubilets.Dubilets
-api-version: '1.21'
+api-version: '${plugin.api.version}'
 authors: [ H3rzius ] #Actualizado por Danettw
 description: Maquina de dubilets
 

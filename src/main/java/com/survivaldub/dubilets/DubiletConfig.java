@@ -30,9 +30,23 @@ public class DubiletConfig {
         if (prizesSection != null) {
             for (String key : prizesSection.getKeys(false)) {
                 ConfigurationSection prizeSection = prizesSection.getConfigurationSection(key);
+                if (prizeSection == null) {
+                    Bukkit.getLogger().warning("[Dubilets] El premio '" + key + "' esta mal formado en config.yml, se ignora.");
+                    continue;
+                }
                 String name = prizeSection.getString("name");
                 double percent = prizeSection.getDouble("probability");
-                ItemStack icon = InventoryUtils.parseIconItem(prizeSection.getString("icon"));
+                ItemStack icon;
+                Object rawIcon = prizeSection.get("icon");
+                if (rawIcon instanceof ItemStack) {
+                    // setPrize() guarda el ItemStack serializado, no una cadena; getString() daba null.
+                    icon = (ItemStack) rawIcon;
+                } else {
+                    if (rawIcon == null) {
+                        Bukkit.getLogger().warning("[Dubilets] El premio '" + key + "' no tiene 'icon' en config.yml.");
+                    }
+                    icon = InventoryUtils.parseIconItem(prizeSection.getString("icon"));
+                }
                 PrizeCategory category = PrizeCategory.get(prizeSection.getString("category"));
                 List<String> commands = prizeSection.getStringList("commands");
                 String permission = prizeSection.getString("permission");

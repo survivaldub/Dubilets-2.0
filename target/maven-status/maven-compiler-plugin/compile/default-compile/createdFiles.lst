@@ -15,12 +15,14 @@ com\survivaldub\dubilets\utils\BlockUtils.class
 com\survivaldub\dubilets\menus\lib\Option.class
 com\survivaldub\dubilets\menus\lib\actions\OpenAction.class
 com\survivaldub\dubilets\commands\DubiletsCommand$2.class
+com\survivaldub\dubilets\handlers\FancyHologramsV2Hook.class
 com\survivaldub\dubilets\handlers\DubiletHandler.class
 com\survivaldub\dubilets\utils\MathUtils.class
 com\survivaldub\dubilets\handlers\models\PrizeCategory.class
 com\survivaldub\dubilets\menus\lib\Sizeable.class
 com\survivaldub\dubilets\utils\BlockUtils$1.class
 com\survivaldub\dubilets\listeners\DubiletsListener.class
+com\survivaldub\dubilets\handlers\NativeHologram.class
 com\survivaldub\dubilets\DubiletConfig.class
 com\survivaldub\dubilets\utils\ChatUtils.class
 com\survivaldub\dubilets\database\models\PlayerModel.class

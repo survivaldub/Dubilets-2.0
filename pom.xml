@@ -16,7 +16,23 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Version de Paper contra la que se compila y api-version del plugin.yml.
+             Perfil -Pmc1206 para compilar contra 1.20.6 (Purpur 1.20.6). -->
+        <paper.version>1.21.4-R0.1-SNAPSHOT</paper.version>
+        <plugin.api.version>1.21</plugin.api.version>
+        <jar.name>Dubilets</jar.name>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>mc1206</id>
+            <properties>
+                <paper.version>1.20.6-R0.1-SNAPSHOT</paper.version>
+                <plugin.api.version>1.20</plugin.api.version>
+                <jar.name>Dubilets-1.20.6</jar.name>
+            </properties>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>
@@ -46,7 +62,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.4-R0.1-SNAPSHOT</version>
+            <version>${paper.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -55,6 +71,17 @@
             <groupId>de.oliver</groupId>
             <artifactId>FancyHolograms</artifactId>
             <version>3.0.0-SNAPSHOT.24</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- FancyHolograms 2.x (paquete de.oliver.fancyholograms). Coordenadas propias
+             para que no choque con la 3.x, que comparte groupId:artifactId. Instalado con:
+             mvn install:install-file -Dfile=FancyHolograms-2.9.0.jar -DgroupId=de.oliver.fh2
+             -DartifactId=FancyHolograms2 -Dversion=2.9.0 -Dpackaging=jar -->
+        <dependency>
+            <groupId>de.oliver.fh2</groupId>
+            <artifactId>FancyHolograms2</artifactId>
+            <version>2.9.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -76,7 +103,7 @@
     </dependencies>
 
     <build>
-        <finalName>Dubilets</finalName>
+        <finalName>${jar.name}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <resources>
             <resource>

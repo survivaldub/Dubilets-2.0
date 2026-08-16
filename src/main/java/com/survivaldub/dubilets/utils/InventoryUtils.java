@@ -19,16 +19,28 @@ public class InventoryUtils {
 
     public static ItemStack parseIconItem(String string) {
         if (string == null || string.isEmpty()) {
+            Bukkit.getLogger().warning("[Dubilets] Un premio no tiene 'icon' en config.yml, se usa STONE.");
             return new ItemStack(Material.STONE);
         }
-        String[] split = string.split(":");
+        // El formato es MATERIAL:cantidad:?:nombre:lore..., asi que un "minecraft:diamond"
+        // rompia el split; se quita el namespace antes de partir para no mover los indices.
+        String raw = string.trim();
+        if (raw.regionMatches(true, 0, "minecraft:", 0, 10)) {
+            raw = raw.substring(10);
+        }
+        String[] split = raw.split(":");
         Material material = Material.matchMaterial(split[0]);
         if (material == null) {
+            Bukkit.getLogger().warning("[Dubilets] Material desconocido en el icono '" + string + "', se usa STONE.");
             material = Material.STONE;
         }
         int amount = 1;
         if (split.length > 1) {
-            amount = Integer.parseInt(split[1]);
+            try {
+                amount = Integer.parseInt(split[1].trim());
+            } catch (NumberFormatException e) {
+                Bukkit.getLogger().warning("[Dubilets] Cantidad invalida en el icono '" + string + "', se usa 1.");
+            }
         }
         ItemStack item = new ItemStack(material, amount);
         if (split.length > 3) {
